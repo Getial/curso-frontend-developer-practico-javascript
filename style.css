@@ -22,19 +22,20 @@ body {
 nav {
   display: flex;
   justify-content: space-between;
-  padding: 0 24px;
+  padding: 0px;
   border-bottom: 1px solid var(--very-light-pink);
   position: fixed;
   top: 0;
-  left: 0;
+  left: 0px;
   background-color: var(--white);
-  width: 92%;
+  width: 100%;
 }
 .menu {
   display: none;
 }
 .logo {
   width: 100px;
+  margin-left: 20px;
 }
 .navbar-left ul,
 .navbar-right ul {
@@ -73,6 +74,7 @@ nav {
 }
 .navbar-shopping-cart {
   position: relative;
+  margin-right: 10px;
 }
 .navbar-shopping-cart div {
   width: 16px;
@@ -172,7 +174,7 @@ nav {
 .order-detail {
   background-color: var(--white);
   width: 360px;
-  padding: 0 24px;
+  padding: 0 16px;
   padding-bottom: 20px;
   box-sizing: border-box;
   position: fixed;
@@ -220,7 +222,7 @@ nav {
 }
 .shopping-cart {
   display: grid;
-  grid-template-columns: auto 1fr auto auto;
+  grid-template-columns: 1fr 4fr 3fr 1fr;
   gap: 16px;
   margin-bottom: 24px;
   align-items: center;
@@ -237,11 +239,24 @@ nav {
 .shopping-cart p:nth-child(2) {
   color: var(--very-light-pink);
 }
-.shopping-cart p:nth-child(3) {
+.shopping-cart .amount-order {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.amount-order button {
+  width: 25px;
+  height: 25px;
+  border: 1px solid var(--very-light-pink);
+  border-radius: 25%;
+  background-color: transparent;
+  font-size: 18px;
+}
+.shopping-cart .price-item {
   font-size: var(--md);
   font-weight: bold;
 }
-.primary-button {
+.order-detail .primary-button {
   background-color: var(--hospital-green);
   border-radius: 8px;
   border: none;
@@ -307,7 +322,13 @@ nav {
   width: 360px;
   padding-bottom: 24px;
   position: absolute;
+  position: fixed;
   right: 0;
+  top: 60px;
+
+  -webkit-box-shadow: -4px 10px 26px -4px rgba(0,0,0,0.75);
+  -moz-box-shadow: -4px 10px 26px -4px rgba(0,0,0,0.75);
+  box-shadow: -4px 10px 26px -4px rgba(0,0,0,0.75);
 }
 .product-detail-close {
   background: var(--white);
@@ -371,6 +392,7 @@ nav {
 @media (max-width: 640px) {
   .menu {
     display: block;
+    margin-left: 10px;
   }
   .navbar-left ul {
     display: none;
