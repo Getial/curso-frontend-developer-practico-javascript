@@ -7,7 +7,9 @@ const mobileMenu = document.querySelector('.mobile-menu');
 const shoppingCartContainer = document.querySelector('.order-detail');
 const productDetailContainer = document.querySelector('#productDetail');
 const cardsContainer = document.querySelector('.cards-container');
-const shoppingListContainer = document.querySelector('.shopping-cart-list')
+const shoppingListContainer = document.querySelector('.shopping-cart-list');
+const itemsShoppignCartText = document.querySelector('.items_shoppingcart');
+const totalPriceText = document.querySelector('.total-price');
 
 menuEmail.addEventListener('click', toggleDesktopMenu)
 burgerMenu.addEventListener('click', toggleMobileMenu)
@@ -109,8 +111,14 @@ function addProductToShoppingList(product) {
 }
 
 function subtractProductToShoppingList(product) {
-    item = shoppingList.find(elemento => elemento.id == product.id)
+
+    const item = shoppingList.find(elemento => elemento.id == product.id)
     item.amount --
+
+    if(item.amount <= 0) {
+        console.log("cero o menos");
+        shoppingList = shoppingList.filter(el => el.id !== item.id)
+    }
 
     renderShoppingList(shoppingList)
 }
@@ -175,18 +183,22 @@ const renderCategories = (arr) => {
 const renderShoppingList = (arr) => {
 
     shoppingListContainer.innerHTML = ''
+    itemsShoppignCartText.innerText = arr.length;
+    let totalPrice = 0;
 
     for (product of arr) {
-        const productItem = product
+        const productItem = product;
+
+        totalPrice += product.price * product.amount;
 
         const itemCard = document.createElement('div');
-        itemCard.classList.add('shopping-cart')
+        itemCard.classList.add('shopping-cart');
 
-        const productFigure = document.createElement('figure')
+        const productFigure = document.createElement('figure');
         const productImg = document.createElement('img');
         productImg.setAttribute('src', product.images[0]);
 
-        productFigure.appendChild(productImg)
+        productFigure.appendChild(productImg);
 
         const title = document.createElement('p');
         title.innerText = product.title;
@@ -199,7 +211,7 @@ const renderShoppingList = (arr) => {
         subtractButton.addEventListener('click', () => subtractProductToShoppingList(productItem))
 
         const amountText = document.createElement('p');
-        amountText.innerText = '$' + product.amount;
+        amountText.innerText = product.amount;
         
         const addButton = document.createElement('button');
         addButton.innerText = '+';
@@ -218,26 +230,9 @@ const renderShoppingList = (arr) => {
         itemCard.appendChild(priceText)
 
         shoppingListContainer.appendChild(itemCard)
-
-        
-
-
-        // cardHTML += `
-        // <div class="shopping-cart">
-        //   <figure>
-        //     <img src="${product.images[0]}" alt="">
-        //   </figure>
-        //   <p>${product.title}</p>
-        //   <div class="amount-order">
-        //     <button>-</button>
-        //     <p>${product.amount}</p>
-        //     <button>+</button>
-        //   </div>
-        //   <p class="price-item">$${product.price * product.amount}</p>
-        // </div>
-        // `
-        // shoppingListContainer.innerHTML = cardHTML
     }
+
+    totalPriceText.innerText = totalPrice;
 }
 
 const getProducts = (url) => {

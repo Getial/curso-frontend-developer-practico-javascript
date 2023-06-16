@@ -61,8 +61,13 @@ nav {
   border-radius: 8px;
   font-size: 16px;
 }
+
 .navbar-left ul li a:hover,
 .navbar-right ul li a:hover {
+  border: 1px solid var(--hospital-green);
+  color: var(--hospital-green);
+}
+.navbar-left ul li .category-active {
   border: 1px solid var(--hospital-green);
   color: var(--hospital-green);
 }
