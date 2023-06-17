@@ -8,6 +8,8 @@ const shoppingCartContainer = document.querySelector('.order-detail');
 const productDetailContainer = document.querySelector('#productDetail');
 const cardsContainer = document.querySelector('.cards-container');
 const shoppingListContainer = document.querySelector('.shopping-cart-list');
+const categoriesContainer = document.querySelector('.navbar-categories')
+const categoriesMobileContainer = document.querySelector('.navbar-categories-mobile')
 const itemsShoppignCartText = document.querySelector('.items_shoppingcart');
 const totalPriceText = document.querySelector('.total-price');
 
@@ -16,12 +18,42 @@ burgerMenu.addEventListener('click', toggleMobileMenu)
 shoppingCarIcon.addEventListener('click', toggleshoppingCartContainer)
 arrowBackIcon.addEventListener('click', toggleshoppingCartContainer)
 
-const API_PRODUCTS = 'https://api.escuelajs.co/api/v1/products?offset=0&limit=10';
+const API_BASE_ALL = 'https://api.escuelajs.co/api/v1/products'
+const API_CATEGORYS = 'https://api.escuelajs.co/api/v1/categories/'
+let API_BASE = API_BASE_ALL; 
 
 let productList = [];
 let shoppingList = [];
 let loading = true;
 let offset = 0;
+let categoriesOfApi = [];
+let categories = [
+    {
+        name: 'All',
+        id: 0,
+        isActive: true
+    },
+    {
+        name: 'Clothes',
+        id: 1,
+        isActive: false
+    },
+    {
+        name: 'Electronics',
+        id: 2,
+        isActive: false
+    },
+    {
+        name: 'Furniture',
+        id: 3,
+        isActive: false
+    },
+    {
+        name: 'Others',
+        id: 5,
+        isActive: false
+    },
+];
 
 function toggleDesktopMenu() {
     const isShoppingCartContainerClose = shoppingCartContainer.classList.contains('inactive')
@@ -69,22 +101,45 @@ function toggleshoppingCartContainer() {
 }
 
 function openProductDetail(product) {
-    const cardHTML = `
-    <div class="product-detail-close" onClick="closeProductDetail()">
-        <img src="./icons/icon_close.png" alt="close">
-    </div>
-    <img src="${product.images[0]}" alt="bike">
-    <div class="product-info">
-        <p>$${product.price}</p>
-        <p>${product.title}</p>
-        <p>${product.description}</p>
-        <button class="primary-button add-to-cart-button">
-            <img src="./icons/bt_add_to_cart.svg" alt="add to cart">
-            Add to cart
-        </button>
-    </div>
-    `
-    productDetailContainer.innerHTML = cardHTML
+    productDetailContainer.innerHTML = ''
+
+    const productItem = product;
+
+    const iconCloseContainer = document.createElement('div')
+    iconCloseContainer.classList.add('product-detail-close')
+    const iconClose = document.createElement('img')
+    iconClose.setAttribute('src', './icons/icon_close.png')
+    iconCloseContainer.appendChild(iconClose)
+    iconCloseContainer.addEventListener('click', () => closeProductDetail())
+
+    const productImage = document.createElement('img')
+    productImage.setAttribute('src', product.images[0])
+
+    const productInfoCard = document.createElement('div')
+    productInfoCard.classList.add('product-info')
+    const productPrice = document.createElement('p')
+    productPrice.innerText = '$' + product.price
+    const productTitle = document.createElement('p')
+    productTitle.innerText = product.title
+    const productDescription = document.createElement('p')
+    productDescription.innerText = product.description
+    const btnAddProduct = document.createElement('button')
+    btnAddProduct.classList.add('primary-button')
+    btnAddProduct.classList.add('add-to-cart-button')
+    const iconAdd = document.createElement('img')
+    iconAdd.setAttribute('src', './icons/bt_add_to_cart.svg')
+    btnAddProduct.innerText = 'Add to cart'
+    btnAddProduct.appendChild(iconAdd)
+    btnAddProduct.addEventListener('click', () => addProductToShoppingList(productItem))
+
+    productInfoCard.appendChild(productPrice)
+    productInfoCard.appendChild(productTitle)
+    productInfoCard.appendChild(productDescription)
+    productInfoCard.appendChild(btnAddProduct)
+
+    productDetailContainer.appendChild(iconCloseContainer)
+    productDetailContainer.appendChild(productImage)
+    productDetailContainer.appendChild(productInfoCard)
 
     shoppingCartContainer.classList.add('inactive')
     productDetailContainer.classList.remove('inactive')
@@ -95,7 +150,6 @@ function closeProductDetail() {
 }
 
 function addProductToShoppingList(product) {
-    console.log(product);
     if(shoppingList.some(item => item.id === product.id)) {
         item = shoppingList.find(elemento => elemento.id == product.id)
         item.amount ++
@@ -121,6 +175,28 @@ function subtractProductToShoppingList(product) {
     }
 
     renderShoppingList(shoppingList)
+}
+
+function selectCategory(categoryId) {
+
+    categories.forEach( category => category.isActive = false)
+    const item = categories.find(el => el.id == categoryId)
+    item.isActive = true;
+    productList = []
+    offset = 0
+
+    if(categoryId == 0 ) {
+        API_BASE = API_BASE_ALL + '?offset=0&limit=10';
+        getProducts(API_BASE)
+        API_BASE = API_BASE_ALL
+    } else {
+        API_BASE = API_CATEGORYS + categoryId + '/products?offset=0&limit=10';
+        getProducts(API_BASE)
+        API_BASE = API_CATEGORYS + categoryId + '/products';
+    }
+
+
+    renderCategories(categories)
 }
 
 const  renderProducts = (arr) => {
@@ -167,17 +243,40 @@ const  renderProducts = (arr) => {
   }
 
 const renderCategories = (arr) => {
+    categoriesContainer.innerHTML = ''
+    categoriesMobileContainer.innerHTML = ''
+
     for (category of arr) {
+        const categoryId = category.id
         const item = document.createElement('li');
 
         const ancla = document.createElement('a');
-        ancla.setAttribute('href', '/')
+        ancla.setAttribute('href', '#')
+        category.isActive ? ancla.classList.add('category-active') : '';
         ancla.innerText = category.name
 
         item.appendChild(ancla)
+        item.addEventListener('click', () => selectCategory(categoryId))
 
         categoriesContainer.appendChild(item)
     }
+    
+    for (category of arr) {
+        const categoryId = category.id
+        const item = document.createElement('li');
+
+        const ancla = document.createElement('a');
+        ancla.setAttribute('href', '#')
+        category.isActive ? ancla.classList.add('category-active') : '';
+        ancla.innerText = category.name
+
+        item.appendChild(ancla)
+        item.addEventListener('click', () => selectCategory(categoryId))
+
+        categoriesMobileContainer.appendChild(item)
+    }
+
+    () => toggleMobileMenu()
 }
 
 const renderShoppingList = (arr) => {
@@ -249,21 +348,31 @@ const getProducts = (url) => {
         })
 }
 
+const getCategories = (url) => {
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            categoriesOfApi = data
+        })
+}
+
 if(window.innerWidth >= 1300 ) {
     console.log("pidiendo mas productos");
     offset = 10;
-    const API = `https://api.escuelajs.co/api/v1/products?offset=${offset}&limit=10`
+    const API = API_BASE + `?offset=${offset}&limit=10`
     getProducts(API)
 }
 
-getProducts(API_PRODUCTS) //llamado al API cuando el usuario ingresa a la pagina
+getProducts(API_BASE_ALL + '?offset=0&limit=10') //llamado al API cuando el usuario ingresa a la pagina
+renderCategories(categories)
+getCategories(API_CATEGORYS)
 
 
 const onScroll = () => {
     if (document.body.scrollHeight - window.innerHeight <= window.scrollY) {
         while(!loading) {
             offset += 10;
-            const API = `https://api.escuelajs.co/api/v1/products?offset=${offset}&limit=10`
+            const API = `${API_BASE}?offset=${offset}&limit=10`
             getProducts(API)
         }
     }

@@ -152,6 +152,7 @@ nav {
   text-decoration: none;
   color: var(--black);
   font-weight: bold;
+  padding: 5px;
   /* margin-bottom: 24px; */
 }
 .mobile-menu ul {
@@ -159,11 +160,16 @@ nav {
   margin: 24px 0 0;
   list-style: none;
 }
-.mobile-menu ul:nth-child(1) {
+.mobile-menu .navbar-categories-mobile{
   border-bottom: 1px solid var(--very-light-pink);
 }
 .mobile-menu ul li {
   margin-bottom: 24px;
+}
+.navbar-categories-mobile .category-active {
+  color: var(--hospital-green);
+  border: 1px solid var(--hospital-green);
+  border-radius: 5px;
 }
 .email {
   font-size: var(--sm);
