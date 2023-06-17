@@ -360,7 +360,7 @@ if(window.innerWidth >= 1300 ) {
 
 getProducts(API_BASE_ALL + '?offset=0&limit=10') //llamado al API cuando el usuario ingresa a la pagina
 renderCategories(categories)
-getCategories(API_CATEGORYS)
+// getCategories(API_CATEGORYS)
 
 
 const onScroll = () => {
