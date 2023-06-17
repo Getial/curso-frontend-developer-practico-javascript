@@ -159,7 +159,6 @@ function addProductToShoppingList(product) {
             amount: 1,
         })
     }
-    console.log(shoppingList);
     
     renderShoppingList(shoppingList)
 }
@@ -170,7 +169,6 @@ function subtractProductToShoppingList(product) {
     item.amount --
 
     if(item.amount <= 0) {
-        console.log("cero o menos");
         shoppingList = shoppingList.filter(el => el.id !== item.id)
     }
 
@@ -195,7 +193,7 @@ function selectCategory(categoryId) {
         API_BASE = API_CATEGORYS + categoryId + '/products';
     }
 
-
+    toggleMobileMenu()
     renderCategories(categories)
 }
 
@@ -275,8 +273,6 @@ const renderCategories = (arr) => {
 
         categoriesMobileContainer.appendChild(item)
     }
-
-    () => toggleMobileMenu()
 }
 
 const renderShoppingList = (arr) => {
@@ -357,7 +353,6 @@ const getCategories = (url) => {
 }
 
 if(window.innerWidth >= 1300 ) {
-    console.log("pidiendo mas productos");
     offset = 10;
     const API = API_BASE + `?offset=${offset}&limit=10`
     getProducts(API)
