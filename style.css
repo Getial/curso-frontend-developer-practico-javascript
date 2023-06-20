@@ -15,7 +15,7 @@ body {
 }
 
 .inactive {
-  display: none;
+  display: none !important;
 }
 
 /*Navbar*/
@@ -61,7 +61,9 @@ nav {
   border-radius: 8px;
   font-size: 16px;
 }
-
+.navbar-right {
+  margin-right: 20px;
+}
 .navbar-left ul li a:hover,
 .navbar-right ul li a:hover {
   border: 1px solid var(--hospital-green);
@@ -71,11 +73,16 @@ nav {
   border: 1px solid var(--hospital-green);
   color: var(--hospital-green);
 }
-.navbar-email {
+.navbar-user {
   cursor: pointer;
   color: var(--very-light-pink);
   font-size: var(--sm);
-  margin-right: 12px;
+  margin-right: 20px;
+  height: 100%;
+  align-items: center;
+}
+.navbar-user .primary-button {
+  height: 30px;
 }
 .navbar-shopping-cart {
   position: relative;
@@ -142,11 +149,12 @@ nav {
 
 .mobile-menu {
   background-color: var(--white);
-  position: absolute;
+  width: 95%;
+  position: fixed;
+  bottom: 0;
   left: 0;
   top: 60px;
   padding: 24px;
-  width: 100%;
 }
 .mobile-menu a {
   text-decoration: none;
@@ -161,6 +169,7 @@ nav {
   list-style: none;
 }
 .mobile-menu .navbar-categories-mobile{
+  width: 95%;
   border-bottom: 1px solid var(--very-light-pink);
 }
 .mobile-menu ul li {
@@ -178,6 +187,12 @@ nav {
 .sign-out {
   font-size: var(--sm);
   color: var(--hospital-green) !important;
+}
+.mobile-menu .login-button {
+  width: 300px;
+  position: absolute;
+  bottom: 0;
+  left: 50px;
 }
 
 /* Shopping cart container*/
@@ -401,7 +416,8 @@ nav {
 
 /*Log in*/
 
-.login-container {
+.login-container,
+.sign-up-container {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -432,6 +448,10 @@ nav {
   text-align: center;
   text-decoration: none;
   margin-bottom: 52px;
+}
+.form div {
+  display: flex;
+  flex-direction: column;
 }
 .label {
   font-size: var(--sm);
@@ -485,7 +505,7 @@ nav {
   .navbar-left ul {
     display: none;
   }
-  .navbar-email {
+  .navbar-user {
     display: none;
   }
   .desktop-menu {

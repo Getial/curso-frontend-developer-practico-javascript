@@ -1,4 +1,4 @@
-const menuEmail = document.querySelector('.navbar-email');
+const menuUser = document.querySelector('.navbar-user');
 const desktopMenu = document.querySelector('.desktop-menu');
 const shoppingCarIcon = document.querySelector('.navbar-shopping-cart')
 const arrowBackIcon = document.querySelector('.arrow-left-shopping-cart')
@@ -8,15 +8,23 @@ const shoppingCartContainer = document.querySelector('.order-detail');
 const productDetailContainer = document.querySelector('#productDetail');
 const cardsContainer = document.querySelector('.cards-container');
 const shoppingListContainer = document.querySelector('.shopping-cart-list');
-const categoriesContainer = document.querySelector('.navbar-categories')
-const categoriesMobileContainer = document.querySelector('.navbar-categories-mobile')
+const categoriesContainer = document.querySelector('.navbar-categories');
+const categoriesMobileContainer = document.querySelector('.navbar-categories-mobile');
 const itemsShoppignCartText = document.querySelector('.items_shoppingcart');
 const totalPriceText = document.querySelector('.total-price');
+const btnLogin = document.querySelector('#btn-login');
+const btnSingUp = document.querySelector('.signup-button')
+const emailLogin = document.querySelector('#email');
+const passwordLogin = document.querySelector('#password');
+const loginContainer = document.querySelector('.login-container');
+const signupContainer = document.querySelector('.sign-up-container');
 
-menuEmail.addEventListener('click', toggleDesktopMenu)
+menuUser.addEventListener('click', toggleDesktopMenu)
 burgerMenu.addEventListener('click', toggleMobileMenu)
 shoppingCarIcon.addEventListener('click', toggleshoppingCartContainer)
 arrowBackIcon.addEventListener('click', toggleshoppingCartContainer)
+btnLogin.addEventListener('click', submitLogin)
+btnSingUp.addEventListener('click', showFormRegister)
 
 const API_BASE_ALL = 'https://api.escuelajs.co/api/v1/products'
 const API_CATEGORYS = 'https://api.escuelajs.co/api/v1/categories/'
@@ -25,6 +33,7 @@ let API_BASE = API_BASE_ALL;
 let productList = [];
 let shoppingList = [];
 let loading = true;
+let isLogin = false;
 let offset = 0;
 let categoriesOfApi = [];
 let categories = [
@@ -54,15 +63,35 @@ let categories = [
         isActive: false
     },
 ];
+let usuarios = [
+    {
+        name: 'admin',
+        email: 'admin@example.com',
+        password: 'admin123'
+    }
+]
+let usuarioActivo = {};
+
+if(localStorage.getItem('isLogin')) {
+    usuarioActivo = JSON.parse(localStorage.getItem('usuarioActivo'))
+    console.log(usuarioActivo)
+}
 
 function toggleDesktopMenu() {
-    const isShoppingCartContainerClose = shoppingCartContainer.classList.contains('inactive')
-
-    if(!isShoppingCartContainerClose) {
-        shoppingCartContainer.classList.add('inactive')
+    if(isLogin) {
+        const isShoppingCartContainerClose = shoppingCartContainer.classList.contains('inactive')
+    
+        if(!isShoppingCartContainerClose) {
+            shoppingCartContainer.classList.add('inactive')
+        }
+    
+        desktopMenu.classList.toggle('inactive')
+    } else {
+        loginContainer.classList.remove('inactive')
+        // productList = []
+        renderProducts([])
     }
-
-    desktopMenu.classList.toggle('inactive')
+    
 }
 
 function toggleMobileMenu() {
@@ -195,6 +224,62 @@ function selectCategory(categoryId) {
 
     toggleMobileMenu()
     renderCategories(categories)
+}
+
+function submitLogin(ev) {
+    const userEmail = emailLogin.value;
+    const userPassword = passwordLogin.value;
+
+    //buscar usuario 
+    const isExistUser = usuarios.find(user => user.email === userEmail)
+
+    if(isExistUser) {
+        if(userPassword === usuarios[0].password) {
+            getProducts(API_BASE_ALL + '?offset=0&limit=10'); //llamado al API cuando el usuario ingresa a la pagina
+            isLogin = true;
+            localStorage.setItem('isLogin', isLogin)
+            loginContainer.classList.add('inactive');
+        }
+    } else {
+        alert("el usuario o la contraseña no son incorrectos")
+    }
+
+}
+
+function showFormRegister() {
+    loginContainer.classList.add('inactive')
+    signupContainer.classList.remove('inactive')
+}
+
+function createAcount(ev) {
+    ev.preventDefault();
+    const newUserName = ev.target.form[0].value;
+    const newUserEmail = ev.target.form[0].value;
+    const newUserPassword = ev.target.form[0].value;
+
+    //comprobar que el correo no este en uso ya
+    const isExistUser = usuarios.find(user => user.email === newUserEmail)
+
+    if(isExistUser) {
+        alert("Este correo ya esta siendo usado en otra cuenta")
+    } else {
+        const newUser = {
+            name: newUserName,
+            email: newUserEmail,
+            password: newUserPassword
+        }
+        usuarios.push(newUser)
+        usuarioActivo = newUser;
+
+        isLogin = true;
+        localStorage.setItem('usuarioActivo', JSON.stringify(usuarioActivo))
+        localStorage.setItem('usuarios', JSON.stringify(usuarios))
+        localStorage.setItem('isLogin', isLogin)
+
+        signupContainer.classList.add('inactive')
+        renderProducts(productList)
+    }
+
 }
 
 const  renderProducts = (arr) => {
@@ -360,7 +445,6 @@ if(window.innerWidth >= 1300 ) {
 
 getProducts(API_BASE_ALL + '?offset=0&limit=10') //llamado al API cuando el usuario ingresa a la pagina
 renderCategories(categories)
-// getCategories(API_CATEGORYS)
 
 
 const onScroll = () => {

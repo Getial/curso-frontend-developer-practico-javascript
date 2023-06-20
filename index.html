@@ -30,7 +30,9 @@
 
       <div class="navbar-right">
         <ul>
-          <li class="navbar-email">platzi@example.com</li>
+          <li class="navbar-user">
+            <button class="primary-button login-button">Log in</button>
+          </li>
           <li class="navbar-shopping-cart">
             <img src="./icons/icon_shopping_cart.svg" alt="shopping cart" />
             <div class="items_shoppingcart">0</div>
@@ -59,8 +61,10 @@
         <ul class="navbar-categories-mobile">
           <!-- lista agregada desde js-->
         </ul>
+
+        <button class="primary-button login-button" onclick="toggleDesktopMenu()">Log in</button>
     
-        <ul>
+        <!-- <ul>
           <li>
             <a href="#">My orders</a>
           </li>
@@ -76,7 +80,7 @@
           <li>
             <a href="#" class="sign-out">Sign out</a>
           </li>
-        </ul>
+        </ul> -->
       </div>
     </nav>
 
@@ -116,24 +120,45 @@
       </div>
     </section>
 
-    <!-- <section class="login-container">
+    <section class="login-container inactive">
       <div class="form-container">
         <img src="./logos/logo_yard_sale.svg" alt="logo" class="logo">
   
-        <form action="/main.js" class="form">
+        <form action="" class="form">
           <label for="email" class="label">Email address</label>
-          <input type="text" id="email" placeholder="platzi@example.com" class="input input-email">
+          <input type="text" id="email" placeholder="felipe@example.com" class="input input-email">
   
           <label for="password" class="label">Password</label>
           <input type="password" id="password" placeholder="*********" class="input input-password">
   
-          <input type="submit" value="Log in" class="primary-button login-button">
+          <input type="button" value="Log in" id="btn-login" class="primary-button login-button">
           <a href="/">Forgot my password</a>
         </form>
   
         <button class="secondary-button signup-button">Sign up</button>
       </div>
-    </section> -->
+    </section>
+
+    <section class="sign-up-container inactive">
+      <div class="form-container">
+        <h1 class="title">Create account</h1>
+  
+        <form class="form">
+          <div>
+            <label for="name" class="label">Name</label>
+            <input type="text" id="create-name" placeholder="Your Name" class="input input-name">
+  
+            <label for="email" class="label">Email</label>
+            <input type="text" id="create-email" placeholder="platzi@example.com" class="input input-email">
+  
+            <label for="password" class="label">Password</label>
+            <input type="password" id="create-password" placeholder="*********" class="input input-password">
+          </div>
+  
+          <input type="submit" onclick="createAcount(event)" value="Create" class="primary-button login-button">
+        </form>
+      </div>
+    </>
 
     <script src="./main.js"></script>
   </body>
