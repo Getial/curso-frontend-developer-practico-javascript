@@ -18,6 +18,8 @@ const emailLogin = document.querySelector('#email');
 const passwordLogin = document.querySelector('#password');
 const loginContainer = document.querySelector('.login-container');
 const signupContainer = document.querySelector('.sign-up-container');
+const footerMobileMenu = document.querySelector('.footer-mobile-menu')
+const textError = document.querySelector('.container-error');
 
 menuUser.addEventListener('click', toggleDesktopMenu)
 burgerMenu.addEventListener('click', toggleMobileMenu)
@@ -71,14 +73,73 @@ let usuarios = [
     }
 ]
 let usuarioActivo = {};
+let error = ''
 
-if(localStorage.getItem('isLogin')) {
-    usuarioActivo = JSON.parse(localStorage.getItem('usuarioActivo'))
-    console.log(usuarioActivo)
+
+function comprobarInformacion () {
+    if(localStorage.getItem('isLogin') == 'true') {
+        isLogin = localStorage.getItem('isLogin')
+        usuarioActivo = JSON.parse(localStorage.getItem('usuarioActivo'))
+    }
+    
+    if(localStorage.getItem('usuarios')) {
+        usuarios = JSON.parse(localStorage.getItem('usuarios'))
+    }
+    
+    if(isLogin == true || isLogin == 'true') {
+        menuUser.innerHTML = ''
+        footerMobileMenu.innerHTML = ''
+        
+        const nameUserText = document.createElement('p')
+        nameUserText.innerText = usuarioActivo.name
+        menuUser.appendChild(nameUserText)
+        
+        const infoLoginUser = `
+        <ul>
+            <li>
+                <a href="#">My orders</a>
+            </li>
+            <li>
+                <a href="#">My account</a>
+            </li>
+        </ul>
+        
+        <ul>
+            <li>
+                <a href="#" class="email">${usuarioActivo.name}</a>
+            </li>
+            <li>
+                <a href="#" class="sign-out" onclick="signout()">Sign out</a>
+            </li>
+        </ul>
+        `
+        
+        footerMobileMenu.innerHTML = infoLoginUser
+        
+        
+    } else {
+        menuUser.innerHTML = ''
+        footerMobileMenu.innerHTML = ''
+        
+        const btnLoginNav = document.createElement('button')
+        btnLoginNav.classList.add('primary-button')
+        btnLoginNav.classList.add('login-button')
+        btnLoginNav.innerText = 'Login'
+        menuUser.appendChild(btnLoginNav)
+        
+        const btnLoginMobile = document.createElement('button')
+        btnLoginMobile.classList.add('primary-button')
+        btnLoginMobile.classList.add('login-button')
+        btnLoginMobile.innerText = 'Login'
+        btnLoginMobile.addEventListener('click', () => toggleDesktopMenu())
+        footerMobileMenu.appendChild(btnLoginMobile)
+    }
+    desktopMenu.classList.add('inactive')
 }
 
+
 function toggleDesktopMenu() {
-    if(isLogin) {
+    if(isLogin == true || isLogin == 'true') {
         const isShoppingCartContainerClose = shoppingCartContainer.classList.contains('inactive')
     
         if(!isShoppingCartContainerClose) {
@@ -88,7 +149,6 @@ function toggleDesktopMenu() {
         desktopMenu.classList.toggle('inactive')
     } else {
         loginContainer.classList.remove('inactive')
-        // productList = []
         renderProducts([])
     }
     
@@ -227,6 +287,7 @@ function selectCategory(categoryId) {
 }
 
 function submitLogin(ev) {
+
     const userEmail = emailLogin.value;
     const userPassword = passwordLogin.value;
 
@@ -234,15 +295,27 @@ function submitLogin(ev) {
     const isExistUser = usuarios.find(user => user.email === userEmail)
 
     if(isExistUser) {
-        if(userPassword === usuarios[0].password) {
+        if(userPassword === isExistUser.password) {
             getProducts(API_BASE_ALL + '?offset=0&limit=10'); //llamado al API cuando el usuario ingresa a la pagina
             isLogin = true;
+            usuarioActivo = isExistUser
+
             localStorage.setItem('isLogin', isLogin)
+            localStorage.setItem('usuarioActivo', JSON.stringify(usuarioActivo))
             loginContainer.classList.add('inactive');
+
+            emailLogin.value = ''
+            passwordLogin.value = ''
+            error = ''
+            
+            comprobarInformacion();
+        } else {
+            error = "contraseña incorrecta"
         }
     } else {
-        alert("el usuario o la contraseña no son incorrectos")
+        error = "el usuario no existe"
     }
+    textError.innerText = error
 
 }
 
@@ -251,18 +324,43 @@ function showFormRegister() {
     signupContainer.classList.remove('inactive')
 }
 
+function closeLoginContainer() {
+    emailLogin.value = ''
+    passwordLogin.value = ''
+    error = ''
+    textError.innerText = error;
+    loginContainer.classList.add('inactive')
+    renderProducts(productList)
+}
+
+function closeSignUpContainer() {
+    error = ''
+    textError.innerText = error;
+    loginContainer.classList.remove('inactive')
+    signupContainer.classList.add('inactive')
+}
+
 function createAcount(ev) {
     ev.preventDefault();
     const newUserName = ev.target.form[0].value;
-    const newUserEmail = ev.target.form[0].value;
-    const newUserPassword = ev.target.form[0].value;
+    const newUserEmail = ev.target.form[1].value;
+    const newUserPassword = ev.target.form[2].value;
+    const newConfirmPassword = ev.target.form[3].value;
 
     //comprobar que el correo no este en uso ya
     const isExistUser = usuarios.find(user => user.email === newUserEmail)
 
     if(isExistUser) {
-        alert("Este correo ya esta siendo usado en otra cuenta")
-    } else {
+        error = "Este correo ya esta siendo usado en otra cuenta"
+    } 
+    else if (newUserPassword !== newConfirmPassword) {
+        error = "La contraseña no coincide"
+    }
+    else {
+        for(i = 0; i < 4; i++) {
+            console.log(ev.target.form[i].value );
+            ev.target.form[i].value = ''
+        }
         const newUser = {
             name: newUserName,
             email: newUserEmail,
@@ -276,10 +374,20 @@ function createAcount(ev) {
         localStorage.setItem('usuarios', JSON.stringify(usuarios))
         localStorage.setItem('isLogin', isLogin)
 
+        error = ''
         signupContainer.classList.add('inactive')
         renderProducts(productList)
+        comprobarInformacion()
     }
+    textError.innerText = error
 
+}
+
+function signout() {
+    isLogin = false;
+    localStorage.setItem('isLogin', isLogin)
+    localStorage.removeItem('usuarioActivo')
+    comprobarInformacion()
 }
 
 const  renderProducts = (arr) => {
@@ -445,7 +553,7 @@ if(window.innerWidth >= 1300 ) {
 
 getProducts(API_BASE_ALL + '?offset=0&limit=10') //llamado al API cuando el usuario ingresa a la pagina
 renderCategories(categories)
-
+comprobarInformacion()
 
 const onScroll = () => {
     if (document.body.scrollHeight - window.innerHeight <= window.scrollY) {

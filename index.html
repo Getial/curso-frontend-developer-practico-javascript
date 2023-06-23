@@ -31,7 +31,7 @@
       <div class="navbar-right">
         <ul>
           <li class="navbar-user">
-            <button class="primary-button login-button">Log in</button>
+            
           </li>
           <li class="navbar-shopping-cart">
             <img src="./icons/icon_shopping_cart.svg" alt="shopping cart" />
@@ -47,11 +47,11 @@
           </li>
   
           <li>
-            <a href="clase5.html">My account</a>
+            <a href="#">My account</a>
           </li>
   
           <li>
-            <a href="#">Sign out</a>
+            <a href="#"  onclick="signout()">Sign out</a>
           </li>
         </ul>
       </div>
@@ -62,25 +62,9 @@
           <!-- lista agregada desde js-->
         </ul>
 
-        <button class="primary-button login-button" onclick="toggleDesktopMenu()">Log in</button>
-    
-        <!-- <ul>
-          <li>
-            <a href="#">My orders</a>
-          </li>
-          <li>
-            <a href="clase5.html">My account</a>
-          </li>
-        </ul>
-    
-        <ul>
-          <li>
-            <a href="#" class="email">platzi@example.com</a>
-          </li>
-          <li>
-            <a href="#" class="sign-out">Sign out</a>
-          </li>
-        </ul> -->
+        <div class="footer-mobile-menu">
+          <!--info agregada desde js-->
+        </div>
       </div>
     </nav>
 
@@ -122,7 +106,12 @@
 
     <section class="login-container inactive">
       <div class="form-container">
-        <img src="./logos/logo_yard_sale.svg" alt="logo" class="logo">
+        <div class="logo-container">
+          <div class="login-close" onclick="closeLoginContainer()">
+            ⇐
+          </div>
+          <img src="./logos/logo_yard_sale.svg" alt="logo" class="logo">
+        </div>
   
         <form action="" class="form">
           <label for="email" class="label">Email address</label>
@@ -132,15 +121,18 @@
           <input type="password" id="password" placeholder="*********" class="input input-password">
   
           <input type="button" value="Log in" id="btn-login" class="primary-button login-button">
-          <a href="/">Forgot my password</a>
+          <a href="#">Forgot my password</a>
         </form>
   
-        <button class="secondary-button signup-button">Sign up</button>
+        <button class="secondary-button signup-button">Create New Account</button>
       </div>
     </section>
 
     <section class="sign-up-container inactive">
       <div class="form-container">
+        <div class="login-close" onclick="closeSignUpContainer()">
+          ⇐
+        </div>
         <h1 class="title">Create account</h1>
   
         <form class="form">
@@ -153,13 +145,19 @@
   
             <label for="password" class="label">Password</label>
             <input type="password" id="create-password" placeholder="*********" class="input input-password">
+            
+            <label for="confirmPassword" class="label">Confirm Password</label>
+            <input type="password" id="confirm-password" placeholder="*********" class="input input-password">
           </div>
   
           <input type="submit" onclick="createAcount(event)" value="Create" class="primary-button login-button">
         </form>
       </div>
-    </>
+    </section>
 
+    <div class="container-error">
+      
+    </div>
     <script src="./main.js"></script>
   </body>
 </html>
