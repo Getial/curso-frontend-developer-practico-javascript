@@ -69,7 +69,8 @@ let usuarios = [
     {
         name: 'admin',
         email: 'admin@example.com',
-        password: 'admin123'
+        password: 'admin123',
+        shoppingList: []
     }
 ]
 let usuarioActivo = {};
@@ -80,6 +81,8 @@ function comprobarInformacion () {
     if(localStorage.getItem('isLogin') == 'true') {
         isLogin = localStorage.getItem('isLogin')
         usuarioActivo = JSON.parse(localStorage.getItem('usuarioActivo'))
+        shoppingList = usuarioActivo.shoppingList
+        renderShoppingList(shoppingList)
     }
     
     if(localStorage.getItem('usuarios')) {
@@ -248,7 +251,8 @@ function addProductToShoppingList(product) {
             amount: 1,
         })
     }
-    
+
+    saveShoppinglistLocalStorage(shoppingList)
     renderShoppingList(shoppingList)
 }
 
@@ -261,7 +265,19 @@ function subtractProductToShoppingList(product) {
         shoppingList = shoppingList.filter(el => el.id !== item.id)
     }
 
+    saveShoppinglistLocalStorage(shoppingList)
     renderShoppingList(shoppingList)
+}
+
+function saveShoppinglistLocalStorage(lista) {
+    usuarios.forEach(user => {
+        if(user.name === usuarioActivo.name) {
+            user.shoppingList = lista
+        }
+    })
+
+    localStorage.setItem('usuarioActivo', JSON.stringify(usuarioActivo))
+    localStorage.setItem('usuarios', JSON.stringify(usuarios))
 }
 
 function selectCategory(categoryId) {
@@ -358,13 +374,13 @@ function createAcount(ev) {
     }
     else {
         for(i = 0; i < 4; i++) {
-            console.log(ev.target.form[i].value );
             ev.target.form[i].value = ''
         }
         const newUser = {
             name: newUserName,
             email: newUserEmail,
-            password: newUserPassword
+            password: newUserPassword,
+            shoppingList: []
         }
         usuarios.push(newUser)
         usuarioActivo = newUser;
@@ -387,6 +403,8 @@ function signout() {
     isLogin = false;
     localStorage.setItem('isLogin', isLogin)
     localStorage.removeItem('usuarioActivo')
+    shoppingList = []
+    renderShoppingList(shoppingList)
     comprobarInformacion()
 }
 
